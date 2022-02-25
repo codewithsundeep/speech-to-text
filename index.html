@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to text in js</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition -->
+    <!-- new webkitSpeechRecognition() || new SpeechRecognition()-->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        form * {
+            width: 50%;
+        }
+
+        textarea {
+            height: 250px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        iframe {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <h1>Speech To Text App</h1>
+        <select>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="ne">Nepali</option>
+        </select>
+        <textarea></textarea>
+        <button type="submit">Speak!</button>
+        <button type="button">Stop</button>
+        Tutorial Video
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/N2tiOzfsqlM" title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+    </form>
+    <script>
+        let form = document.querySelector("form");
+        let sr = window.webkitSpeechRecognition || window.SpeechRecognition;
+        let spRec = new sr();
+        spRec.continuous = true;
+        spRec.interimResults = true;
+        // console.log(spRec);
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            spRec.lang = form[0].querySelector("option:checked").value;
+            spRec.start();
+        })
+        spRec.onresult = res => {
+            let text = Array.from(res.results)
+                .map(r => r[0])
+                .map(txt => txt.transcript)
+                .join("");
+            form[1].value = text;
+            // console.log(text);
+        }
+        form[3].addEventListener("click", () => {
+            spRec.stop()
+        })
+    </script>
+</body>
+</html>
